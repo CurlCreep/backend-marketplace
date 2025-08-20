@@ -1,0 +1,64 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go build cache
+*.log
+*.cache/
+*.tmp
+*.swp
+*.swo
+
+# Go vendor (if you use vendoring)
+vendor/
+
+# Dependency directories
+node_modules/
+dist/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.iml
+
+# Docker
+*.pid
+*.seed
+.env
+.env.*
+docker-compose.override.yml
+
+# Logs
+logs/
+*.log
+*.gz
+
+# Redis / Postgres data (don’t persist inside repo)
+data/
+postgres-data/
+redis-data/
+es-data/
+
+# Kafka / Zookeeper data
+zookeeper-data/
+kafka-data/
+
+# Coverage
+coverage.out
+
+# Kubernetes
+*.crt
+*.key
+*.pem
+
+# CI/CD temp
+.github/workflows/tmp/
