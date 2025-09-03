@@ -1,2 +1,2 @@
 # backend-marketplace
-An E-Commerce marketplace backend project
+A music marketplace backend project

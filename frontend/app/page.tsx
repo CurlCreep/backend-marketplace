@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import HomePage from "@/app/components/home";
 
 export default function Home() {
   const [status, setStatus] = useState("Loading...");
@@ -13,7 +14,8 @@ export default function Home() {
 
   return (
     <div>
-      <h1>Backend Status: {status}</h1>
+      <HomePage />
+      {/* <h1>Backend Status: {status}</h1> */}
     </div>
   );
 }
