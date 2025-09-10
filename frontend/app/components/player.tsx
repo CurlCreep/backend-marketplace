@@ -1,0 +1,200 @@
+"use client";
+import { useRef, useState, useEffect } from "react";
+import { Info, Volume2, VolumeX } from "lucide-react";
+
+
+export default function MusicPlayer() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const [volume, setVolume] = useState(50);
+  const [muted, setMuted] = useState(false);
+  const [lastVolume, setLastVolume] = useState(50);
+  const [dragging, setDragging] = useState(false);
+
+  const toggleMute = () => {
+    if (muted || volume === 0) {
+      // unmute: restore last volume
+      setVolume(lastVolume > 0 ? lastVolume : 50);
+      setMuted(false);
+    } else {
+      // mute: store current volume
+      setLastVolume(volume);
+      setVolume(0);
+      setMuted(true);
+    }
+  };
+
+  const togglePlay = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      if (audio.paused) {
+        audio.play();
+        setIsPlaying(true);
+      } else {
+        audio.pause();
+        setIsPlaying(false);
+      }
+    }
+  };
+
+  const handleVolumeChange = (val: number) => {
+    setVolume(val);
+    if (val > 0) {
+      setLastVolume(val);
+      setMuted(false);
+    } else {
+      setMuted(true);
+    }
+  };
+
+  // Update progress as song plays
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const updateProgress = () => {
+      setProgress((audio.currentTime / audio.duration) * 100 || 0);
+    };
+
+    audio.addEventListener("timeupdate", updateProgress);
+    return () => audio.removeEventListener("timeupdate", updateProgress);
+  }, []);
+
+  // Allow user to scrub
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const audio = audioRef.current;
+    if (audio) {
+      const newTime = (parseFloat(e.target.value) / 100) * audio.duration;
+      audio.currentTime = newTime;
+      setProgress(parseFloat(e.target.value));
+    }
+  };
+
+  return (
+    <div className="relative flex items-center bg-white dark:bg-[#363638] shadow-lg rounded-md w-full max-w-md space-x-2 overflow-hidden p-2">
+        <div className="flex-1">
+            <div className="relative flex space-x-2">
+                
+                {/* Album Art */}
+                <div className="relative w-10 h-10 group cursor-pointer">
+                    <img className="rounded-sm w-full h-full object-cover transition duration-200 group-hover:brightness-50" src="/Folder.jpg" alt="" />
+
+                    <button
+                        className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200 cursor-pointer"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="white"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="white"
+                            className="w-5 h-5"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v18l15-9L5 3z" /> {/* Play icon */}
+                        </svg>
+                    </button>
+                
+                </div>
+                
+                <div className="flex-1 space-y-0">
+                    <p className="text-[0.7rem] font-semibold text-gray-800 dark:text-gray-100 cursor-pointer w-fit">
+                    Song Title
+                    </p>
+                    <p className="text-[0.7rem] text-gray-500 dark:text-gray-400 cursor-pointer w-fit">
+                    Artist Name
+                    </p>
+                </div>
+
+                <button className="flex absolute right-0 items-center text-gray-700 dark:text-gray-200 cursor-pointer">
+                    <Info className="w-4 h-4" />
+                </button>
+
+                <div className="absolute right-10 top-0 flex w-fit space-x-2">
+                    {/* Volume percentage when dragging */}
+                    {dragging && (
+                        <div className="absolute top-0 left-0 text-xs font-semibold text-gray-700 dark:text-gray-200">
+                            {volume}
+                        </div>
+                    )}
+                    
+                    {/* Speaker Icon */}
+                    <button
+                        onClick={toggleMute}
+                        className={`cursor-pointer transition ${
+                            dragging ? "opacity-0 pointer-events-none" : "opacity-100"
+                        }`}
+                    >
+                        {muted || volume === 0 ? (
+                            <VolumeX className="w-4 h-4 text-black dark:text-white" />
+                        ) : (
+                            <Volume2 className="w-4 h-4 text-black dark:text-white" />
+                        )}
+                    </button>
+
+                    {/* Volume Slider */}
+                    <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={volume}
+                        onChange={(e) => handleVolumeChange(Number(e.target.value))}
+                        onMouseDown={() => setDragging(true)}
+                        onMouseUp={() => setDragging(false)}
+                        onTouchStart={() => setDragging(true)}
+                        onTouchEnd={() => setDragging(false)}
+                        className="
+                            w-20
+                            h-4
+                            appearance-none
+                            cursor-pointer
+
+                            /* Firefox */
+                            [&::-moz-range-thumb]:appearance-none
+                            [&::-moz-range-thumb]:w-0
+                            [&::-moz-range-thumb]:h-0
+
+                            [&::-moz-range-progress]:h-0.5
+                            hover:[&::-moz-range-progress]:h-1.0
+                            [&::-moz-range-progress]:bg-black
+                            [&::-moz-range-progress]:dark:bg-white
+                            [&::-moz-range-progress]:rounded-full"
+                        />
+                </div>
+            </div>
+            <input
+                type="range"
+                value={progress}
+                onChange={(e) => setProgress(Number(e.target.value))}
+                className="
+                    absolute
+                    h-0
+                    w-full
+                    bottom-0
+                    left-0
+                    appearance-none
+                    cursor-pointer
+
+                    /* Firefox */
+                    [&::-moz-range-thumb]:appearance-none
+                    [&::-moz-range-thumb]:bg-black
+                    [&::-moz-range-thumb]:w-0
+                    [&::-moz-range-thumb]:h-0
+                    [&::-moz-range-thumb]:border-none
+
+                    [&::-moz-range-track]:h-4
+                    [&::-moz-range-track]:bg-transparent
+
+                    [&::-moz-range-progress]:h-1
+                    hover:[&::-moz-range-progress]:h-1.5
+                    [&::-moz-range-progress]:bg-black
+                    [&::-moz-range-progress]:dark:bg-white
+                    [&::-moz-range-progress]:rounded-full"
+            />
+
+        </div>
+    </div>
+    
+  );
+}

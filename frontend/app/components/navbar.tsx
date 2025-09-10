@@ -1,29 +1,29 @@
 import React from "react";
 import { FaUser } from 'react-icons/fa';
+import MusicPlayer from '@/app/components/player';
 
 export default function NavBar() {
   return (
     <>
-      {/* Navbar */}
-      <nav className="bg-secondary-light dark:bg-secondary-dark shadow-md p-2 flex justify-between items-center">
-        
-        {/* Brand */}
-        <div className="flex items-center space-x-2">
-          <img
-            src="/BrandLogo.svg"
-            className="h-9 w-8"
-          />
-        </div>
+        {/* Navbar */}
+        <nav className="bg-secondary-light dark:bg-secondary-dark shadow-md flex justify-between items-center rounded-t-lg p-3">
+            {/* Brand */}
+            <div className="flex items-center space-x-2">
+                <img
+                    src="/BrandLogo.svg"
+                    className="h-8 w-8 cursor-pointer"
+                />
+            </div>
 
-        {/* Buttons */}
-        <div className="space-x-4">
-          <button className="bg-primary-dark text-white dark:bg-primary-light dark:text-black flex items-center gap-1 text-xs px-4 py-1.5 font-bold rounded-lg text-white cursor-pointer">
-            <FaUser /> {/* icon */}
-            Sign in
-          </button>
-        </div>
+            <MusicPlayer/>
 
-      </nav>
+            <div className="space-x-4">
+                <button className="bg-primary-dark text-white dark:bg-primary-light dark:text-black flex items-center gap-1 text-xs px-4 py-1.5 font-bold rounded-md cursor-pointer">
+                    <FaUser />
+                    Sign in
+                </button>
+            </div>
+        </nav>
     </>
   );
 }
