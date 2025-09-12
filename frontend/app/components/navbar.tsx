@@ -6,12 +6,12 @@ export default function NavBar() {
   return (
     <>
         {/* Navbar */}
-        <nav className="bg-secondary-light dark:bg-secondary-dark shadow-md flex justify-between items-center rounded-t-lg p-3">
+        <nav className="bg-secondary-light dark:bg-secondary-dark shadow-md flex justify-between items-center rounded-t-lg py-3 px-8">
             {/* Brand */}
             <div className="flex items-center space-x-2">
                 <img
                     src="/BrandLogo.svg"
-                    className="h-8 w-8 cursor-pointer"
+                    className="h-10 w-10 cursor-pointer"
                 />
             </div>
 

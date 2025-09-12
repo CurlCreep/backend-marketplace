@@ -5,8 +5,10 @@ import { Info, Volume2, VolumeX } from "lucide-react";
 
 export default function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  const duration = 240;
+  const rangeRef = useRef<HTMLInputElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const [volume, setVolume] = useState(50);
   const [muted, setMuted] = useState(false);
@@ -28,15 +30,16 @@ export default function MusicPlayer() {
 
   const togglePlay = () => {
     const audio = audioRef.current;
-    if (audio) {
-      if (audio.paused) {
-        audio.play();
-        setIsPlaying(true);
-      } else {
-        audio.pause();
-        setIsPlaying(false);
-      }
-    }
+    setIsPlaying((prev) => !prev);
+    // if (audio) {
+    //   if (audio.paused) {
+    //     audio.play();
+    //     setIsPlaying((prev) => !prev);
+    //   } else {
+    //     audio.pause();
+    //     setIsPlaying((prev) => !prev);
+    //   }
+    // }
   };
 
   const handleVolumeChange = (val: number) => {
@@ -47,6 +50,24 @@ export default function MusicPlayer() {
     } else {
       setMuted(true);
     }
+  };
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const s = Math.floor(seconds % 60)
+      .toString()
+      .padStart(2, "0");
+    return `${m}:${s}`;
+  };
+
+  // Calculate thumb position in %
+  const getThumbPosition = () => {
+    if (!rangeRef.current) return 0;
+    const min = Number(rangeRef.current.min || 0);
+    const max = Number(rangeRef.current.max || 100);
+    return ((progress - min) / (max - min)) * 100;
   };
 
   // Update progress as song plays
@@ -75,96 +96,129 @@ export default function MusicPlayer() {
   return (
     <div className="relative flex items-center bg-white dark:bg-[#363638] shadow-lg rounded-md w-full max-w-md space-x-2 overflow-hidden p-2">
         <div className="flex-1">
-            <div className="relative flex space-x-2">
+            <div className="relative flex gap-2">
                 
                 {/* Album Art */}
-                <div className="relative w-10 h-10 group cursor-pointer">
+                <div className="relative w-10 h-10 group">
                     <img className="rounded-sm w-full h-full object-cover transition duration-200 group-hover:brightness-50" src="/Folder.jpg" alt="" />
 
                     <button
+                        onClick={togglePlay}
                         className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200 cursor-pointer"
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="white"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="white"
-                            className="w-5 h-5"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v18l15-9L5 3z" /> {/* Play icon */}
-                        </svg>
+                        {isPlaying ? (
+                        // Pause icon
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="white"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="white"
+                                className="w-5 h-5"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M6 4h4v16H6zm8 0h4v16h-4z"
+                                />
+                            </svg>
+                        ) : (
+                            // Play icon
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="white"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="white"
+                                className="w-5 h-5"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M5 3v18l15-9L5 3z"
+                                />
+                            </svg>
+                        )}
                     </button>
                 
                 </div>
                 
                 <div className="flex-1 space-y-0">
                     <p className="text-[0.7rem] font-semibold text-gray-800 dark:text-gray-100 cursor-pointer w-fit">
-                    Song Title
+                        Song Title
                     </p>
                     <p className="text-[0.7rem] text-gray-500 dark:text-gray-400 cursor-pointer w-fit">
-                    Artist Name
+                        Artist Name
                     </p>
                 </div>
-
-                <button className="flex absolute right-0 items-center text-gray-700 dark:text-gray-200 cursor-pointer">
-                    <Info className="w-4 h-4" />
-                </button>
-
-                <div className="absolute right-10 top-0 flex w-fit space-x-2">
-                    {/* Volume percentage when dragging */}
-                    {dragging && (
-                        <div className="absolute top-0 left-0 text-xs font-semibold text-gray-700 dark:text-gray-200">
-                            {volume}
-                        </div>
-                    )}
-                    
-                    {/* Speaker Icon */}
-                    <button
-                        onClick={toggleMute}
-                        className={`cursor-pointer transition ${
-                            dragging ? "opacity-0 pointer-events-none" : "opacity-100"
-                        }`}
-                    >
-                        {muted || volume === 0 ? (
-                            <VolumeX className="w-4 h-4 text-black dark:text-white" />
-                        ) : (
-                            <Volume2 className="w-4 h-4 text-black dark:text-white" />
+                
+                <div className="flex-0 relative hidden sm:block">
+                    <div className="flex w-fit space-x-2">
+                        {/* Volume percentage when dragging */}
+                        {dragging && (
+                            <div className="absolute top-0 left-0 text-xs font-semibold text-gray-700 dark:text-gray-200">
+                                {volume}
+                            </div>
                         )}
-                    </button>
+                        
+                        {/* Speaker Icon */}
+                        <button
+                            onClick={toggleMute}
+                            className={`cursor-pointer transition ${
+                                dragging ? "opacity-0 pointer-events-none" : "opacity-100"
+                            }`}
+                        >
+                            {muted || volume === 0 ? (
+                                <VolumeX className="w-4 h-4 text-black dark:text-white" />
+                            ) : (
+                                <Volume2 className="w-4 h-4 text-black dark:text-white" />
+                            )}
+                        </button>
 
-                    {/* Volume Slider */}
-                    <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={volume}
-                        onChange={(e) => handleVolumeChange(Number(e.target.value))}
-                        onMouseDown={() => setDragging(true)}
-                        onMouseUp={() => setDragging(false)}
-                        onTouchStart={() => setDragging(true)}
-                        onTouchEnd={() => setDragging(false)}
-                        className="
-                            w-20
-                            h-4
-                            appearance-none
-                            cursor-pointer
+                        {/* Volume Slider */}
+                        <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={volume}
+                            onChange={(e) => handleVolumeChange(Number(e.target.value))}
+                            onMouseDown={() => setDragging(true)}
+                            onMouseUp={() => setDragging(false)}
+                            onTouchStart={() => setDragging(true)}
+                            onTouchEnd={() => setDragging(false)}
+                            className="
+                                w-20
+                                h-4
+                                appearance-none
+                                cursor-pointer
 
-                            /* Firefox */
-                            [&::-moz-range-thumb]:appearance-none
-                            [&::-moz-range-thumb]:w-0
-                            [&::-moz-range-thumb]:h-0
+                                /* Firefox */
+                                [&::-moz-range-thumb]:appearance-none
+                                [&::-moz-range-thumb]:w-0
+                                [&::-moz-range-thumb]:h-0
 
-                            [&::-moz-range-progress]:h-0.5
-                            hover:[&::-moz-range-progress]:h-1.0
-                            [&::-moz-range-progress]:bg-black
-                            [&::-moz-range-progress]:dark:bg-white
-                            [&::-moz-range-progress]:rounded-full"
+                                [&::-moz-range-progress]:h-0.5
+                                hover:[&::-moz-range-progress]:h-1.0
+                                [&::-moz-range-progress]:bg-black
+                                [&::-moz-range-progress]:dark:bg-white
+                                [&::-moz-range-progress]:rounded-full"
                         />
+
+                        {/* Information button */}
+                        <button className="flex items-center text-gray-700 dark:text-gray-200 cursor-pointer">
+                            <Info className="w-4 h-4" />
+                        </button>
+                    </div>
+                    
+                    {/* Timestamp */}
+                    <div className="absolute bottom-0 right-0 text-[0.6rem] font-medium text-gray-700 dark:text-gray-200">
+                        {formatTime(progress)}
+                    </div>
                 </div>
             </div>
             <input
                 type="range"
+                ref={rangeRef}
                 value={progress}
                 onChange={(e) => setProgress(Number(e.target.value))}
                 className="
