@@ -176,33 +176,46 @@ export default function MusicPlayer() {
                         </button>
 
                         {/* Volume Slider */}
-                        <input
-                            type="range"
-                            min="0"
-                            max="100"
-                            value={volume}
-                            onChange={(e) => handleVolumeChange(Number(e.target.value))}
-                            onMouseDown={() => setDragging(true)}
-                            onMouseUp={() => setDragging(false)}
-                            onTouchStart={() => setDragging(true)}
-                            onTouchEnd={() => setDragging(false)}
-                            className="
-                                w-20
-                                h-4
-                                appearance-none
-                                cursor-pointer
+                        <div className="flex items-center">
+                          <input
+                              type="range"
+                              min="0"
+                              max="100"
+                              value={volume}
+                              onChange={(e) => handleVolumeChange(Number(e.target.value))}
+                              onMouseDown={() => setDragging(true)}
+                              onMouseUp={() => setDragging(false)}
+                              onTouchStart={() => setDragging(true)}
+                              onTouchEnd={() => setDragging(false)}
+                              style={{ "--progress": `${volume}%` } as React.CSSProperties}
+                              className="
+                                  w-20
+                                  h-1    /* thin slider */
+                                  appearance-none
+                                  cursor-pointer
 
-                                /* Firefox */
-                                [&::-moz-range-thumb]:appearance-none
-                                [&::-moz-range-thumb]:w-0
-                                [&::-moz-range-thumb]:h-0
+                                  /* Firefox */
+                                  [&::-moz-range-thumb]:appearance-none
+                                  [&::-moz-range-thumb]:w-0
+                                  [&::-moz-range-thumb]:h-0
 
-                                [&::-moz-range-progress]:h-0.5
-                                hover:[&::-moz-range-progress]:h-1.0
-                                [&::-moz-range-progress]:bg-black
-                                [&::-moz-range-progress]:dark:bg-white
-                                [&::-moz-range-progress]:rounded-full"
-                        />
+                                  [&::-moz-range-progress]:h-0.5
+                                  [&::-moz-range-progress]:bg-black
+                                  dark:[&::-moz-range-progress]:bg-white
+                                  [&::-moz-range-progress]:rounded-full
+
+                                  /* Chrome, Safari, Edge */
+                                  [&::-webkit-slider-thumb]:appearance-none
+                                  [&::-webkit-slider-thumb]:w-0
+                                  [&::-webkit-slider-thumb]:h-0
+                                  [&::-webkit-slider-thumb]:rounded-full
+                                  [&::-webkit-slider-thumb]:border-none
+
+                                  [&::-webkit-slider-runnable-track]:h-0.5
+                                  [&::-webkit-slider-runnable-track]:rounded-full
+                                  [&::-webkit-slider-runnable-track]:[background:linear-gradient(to_right,white_0%,white_var(--progress),transparent_var(--progress),transparent_100%)]"
+                          />
+                        </div>
 
                         {/* Information button */}
                         <button className="flex items-center text-gray-700 dark:text-gray-200 cursor-pointer">
@@ -216,11 +229,16 @@ export default function MusicPlayer() {
                     </div>
                 </div>
             </div>
+            {/* Progress Bar */}
             <input
                 type="range"
                 ref={rangeRef}
                 value={progress}
                 onChange={(e) => setProgress(Number(e.target.value))}
+                style={{
+                  "--progress": `${progress}%`,
+                  background: `linear-gradient(to right, white 0%, white var(--progress), transparent var(--progress), transparent 100%)`,
+                } as React.CSSProperties}
                 className="
                     absolute
                     h-0
@@ -244,7 +262,21 @@ export default function MusicPlayer() {
                     hover:[&::-moz-range-progress]:h-1.5
                     [&::-moz-range-progress]:bg-black
                     [&::-moz-range-progress]:dark:bg-white
-                    [&::-moz-range-progress]:rounded-full"
+                    [&::-moz-range-progress]:rounded-full
+
+                    /* Chrome, Safari, Edge */
+                    [&::-webkit-slider-thumb]:appearance-none
+                    [&::-webkit-slider-thumb]:w-0
+                    [&::-webkit-slider-thumb]:h-0
+                    [&::-webkit-slider-thumb]:rounded-full
+                    [&::-webkit-slider-thumb]:bg-white
+                    [&::-webkit-slider-thumb]:border-none
+
+                    [&::-webkit-slider-runnable-track]:[background:linear-gradient(to_right,white_0%,white_var(--progress),transparent_var(--progress),transparent_100%)]
+                    [&::-webkit-slider-runnable-track]:h-1
+                    [&::-webkit-slider-runnable-track]:rounded-full
+                    hover:[&::-webkit-slider-runnable-track]:h-1.5
+                    "
             />
 
         </div>
