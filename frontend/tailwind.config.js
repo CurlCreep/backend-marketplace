@@ -9,7 +9,3 @@ module.exports = {
   },
   plugins: [],
 }
-
-
-// darkbg: "#1f1f1f",
-// darkbg2: "#252526",

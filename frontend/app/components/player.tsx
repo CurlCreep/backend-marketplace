@@ -94,7 +94,7 @@ export default function MusicPlayer() {
   };
 
   return (
-    <div className="relative flex items-center bg-white dark:bg-[#363638] shadow-lg rounded-md w-full max-w-md space-x-2 overflow-hidden p-2">
+    <div className="relative flex items-center bg-white dark:bg-[#333333] shadow-lg rounded-md w-full max-w-md space-x-2 overflow-hidden p-2">
         <div className="flex-1">
             <div className="relative flex gap-2">
                 
@@ -156,7 +156,7 @@ export default function MusicPlayer() {
                     <div className="flex w-fit space-x-2">
                         {/* Volume percentage when dragging */}
                         {dragging && (
-                            <div className="absolute top-0 left-0 text-xs font-semibold text-gray-700 dark:text-gray-200">
+                            <div className="absolute top-0 left-0 text-xs text-gray-700 dark:text-gray-200">
                                 {volume}
                             </div>
                         )}
@@ -213,7 +213,8 @@ export default function MusicPlayer() {
 
                                   [&::-webkit-slider-runnable-track]:h-0.5
                                   [&::-webkit-slider-runnable-track]:rounded-full
-                                  [&::-webkit-slider-runnable-track]:[background:linear-gradient(to_right,white_0%,white_var(--progress),transparent_var(--progress),transparent_100%)]"
+                                  [&::-webkit-slider-runnable-track]:[background:linear-gradient(to_right,black_0%,black_var(--progress),transparent_var(--progress),transparent_100%)]
+                                  dark:[&::-webkit-slider-runnable-track]:[background:linear-gradient(to_right,white_0%,white_var(--progress),transparent_var(--progress),transparent_100%)]"
                           />
                         </div>
 
@@ -272,8 +273,10 @@ export default function MusicPlayer() {
                     [&::-webkit-slider-thumb]:bg-white
                     [&::-webkit-slider-thumb]:border-none
 
-                    [&::-webkit-slider-runnable-track]:[background:linear-gradient(to_right,white_0%,white_var(--progress),transparent_var(--progress),transparent_100%)]
+                    [&::-webkit-slider-runnable-track]:[background:linear-gradient(to_right,black_0%,black_var(--progress),transparent_var(--progress),transparent_100%)]
+                    dark:[&::-webkit-slider-runnable-track]:[background:linear-gradient(to_right,white_0%,white_var(--progress),transparent_var(--progress),transparent_100%)]
                     [&::-webkit-slider-runnable-track]:h-1
+                    [&::-webkit-slider-runnable-track]:borner-transparent-4
                     [&::-webkit-slider-runnable-track]:rounded-full
                     hover:[&::-webkit-slider-runnable-track]:h-1.5
                     "
