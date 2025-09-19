@@ -1,2 +1,2 @@
-# backend-marketplace
-A music marketplace backend project
+# Echo Music
+A full-stack music streaming site project template
