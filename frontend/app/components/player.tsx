@@ -94,7 +94,7 @@ export default function MusicPlayer() {
   };
 
   return (
-    <div className="relative flex items-center bg-white dark:bg-[#333333] shadow-lg rounded-md w-full max-w-md space-x-2 overflow-hidden p-2">
+    <div className="relative flex items-center bg-white dark:bg-[#333333] border-1 border-gray-300 dark:border-0 shadow-lg rounded-md w-full max-w-md space-x-2 overflow-hidden p-2">
         <div className="flex-1">
             <div className="relative flex gap-2">
                 
@@ -236,10 +236,7 @@ export default function MusicPlayer() {
                 ref={rangeRef}
                 value={progress}
                 onChange={(e) => setProgress(Number(e.target.value))}
-                style={{
-                  "--progress": `${progress}%`,
-                  background: `linear-gradient(to right, white 0%, white var(--progress), transparent var(--progress), transparent 100%)`,
-                } as React.CSSProperties}
+                style={{ "--progress": `${progress}%` } as React.CSSProperties}
                 className="
                     absolute
                     h-0
@@ -273,13 +270,11 @@ export default function MusicPlayer() {
                     [&::-webkit-slider-thumb]:bg-white
                     [&::-webkit-slider-thumb]:border-none
 
-                    [&::-webkit-slider-runnable-track]:[background:linear-gradient(to_right,black_0%,black_var(--progress),transparent_var(--progress),transparent_100%)]
-                    dark:[&::-webkit-slider-runnable-track]:[background:linear-gradient(to_right,white_0%,white_var(--progress),transparent_var(--progress),transparent_100%)]
                     [&::-webkit-slider-runnable-track]:h-1
-                    [&::-webkit-slider-runnable-track]:borner-transparent-4
                     [&::-webkit-slider-runnable-track]:rounded-full
                     hover:[&::-webkit-slider-runnable-track]:h-1.5
-                    "
+                    [&::-webkit-slider-runnable-track]:[background:linear-gradient(to_right,black_0%,black_var(--progress),transparent_var(--progress),transparent_100%)]
+                    dark:[&::-webkit-slider-runnable-track]:[background:linear-gradient(to_right,white_0%,white_var(--progress),transparent_var(--progress),transparent_100%)]"
             />
 
         </div>
