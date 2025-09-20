@@ -15,7 +15,6 @@ export default function HomePage() {
 
         {/* Body */}
         <main className="flex-1 items-center justify-center shadow-lg rounded-lg bg-secondary-light dark:bg-secondary-dark p-2 mr-2">
-          <p>Main content goes here</p>
         </main>
       </div>
 
