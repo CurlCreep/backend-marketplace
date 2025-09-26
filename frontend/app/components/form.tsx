@@ -10,14 +10,14 @@ export default function Form({ onClose }: FormProps) {
     const [showPassword, setShowPassword] = useState(false);
     const [formMode, setformMode] = useState(false);
 
-    const [fieldLeft, setfieldLeft] = useState("");
-    const [fieldRight, setfieldRight] = useState("");
-    const fieldRightRef = useRef(null);
+    const [firstName, setfirstName] = useState("");
+    const [lastName, setlastName] = useState("");
+    const lastNameRef = useRef(null);
 
     useEffect(() => {
         if (formMode) {
-        const t = setTimeout(() => fieldRightRef.current);
-        return () => clearTimeout(t);
+            const t = setTimeout(() => lastNameRef.current);
+            return () => clearTimeout(t);
         }
     }, [formMode]);
 
@@ -33,83 +33,92 @@ export default function Form({ onClose }: FormProps) {
 
                 <div className="flex-col mt-2 items-center justify-center text-center p-6 w-full mx-auto">        
                     <h1
-                    className={`inline-flex items-end text-4xl font-bold ${
-                        formMode ? "mb-12" : "mb-12"
-                    } bg-secondary-light dark:bg-secondary-dark text-gray-800 dark:text-gray-100`}
+                    className={`inline-flex items-end mb-12 text-4xl font-bold bg-secondary-light dark:bg-secondary-dark text-gray-800 dark:text-gray-100`}
                     style={{ lineHeight: "1.18" }}
                     >
                         <span className="mr-1">Sign</span>
                         <span
-                            className="relative inline-block overflow-hidden"
-                            style={{ height: "1.18em", width: "2ch" }}
+                        className="relative inline-block"
+                        style={{ height: "1.18em", width: "2ch" }}
                         >
                             {/* "In" */}
                             <span
-                            className="absolute left-0 bottom-0 w-full flex items-end justify-center transition-transform duration-300 ease-in-out"
-                            style={{ transform: formMode ? "translateY(-100%)" : "translateY(0%)" }}
+                            className="absolute left-0 bottom-0 w-full flex items-end justify-center"
+                            style={{
+                                transform: formMode ? "translateY(-100%)" : "translateY(0%)",
+                                filter: formMode ? "blur(2px)" : "blur(0px)", // blur while moving
+                                opacity: formMode ? 0 : 1,                  // optional: fade out while moving
+                                transition: "transform 200ms ease-in-out, opacity 200ms, filter 100ms ease-in-out",
+                            }}
                             >
                                 In
                             </span>
 
+
                             {/* "Up" */}
                             <span
-                            className="absolute left-0 bottom-0 w-full flex items-end justify-center transition-transform duration-300 ease-in-out"
-                            style={{ transform: formMode ? "translateY(0%)" : "translateY(100%)" }}
+                            className="absolute left-0 bottom-0 w-full flex items-end justify-center"
+                            style={{
+                                transform: formMode ? "translateY(0%)" : "translateY(100%)",
+                                filter: formMode ? "blur(0px)" : "blur(2px)",
+                                opacity: formMode ? 1 : 0,
+                                transition: "transform 200ms ease-in-out, opacity 200ms, filter 100ms ease-in-out",
+                            }}
                             >
                                 Up
                             </span>
                         </span>
+
                     </h1>
 
 
 
                     {/* Input fields */}
-                    <div className={`flex mb-4 gap-2 w-full items-start transition-all duration-400 ease-in-out flex-row`}>
-                        {/* Left */}
+                    <div
+                    className={`flex rounded-lg opacity-100 w-full items-start transition-all duration-600 ease-in-out
+                        ${formMode ? "max-h-40 mb-4 opacity-100 gap-2" : "max-h-0 mb-0 opacity-0 gap-0"}`}
+                    >
+                        {/* First Name */}
                         <input
-                        type={formMode ? "text" : "email"}
-                        placeholder={formMode ? "First Name" : "Email"}
-                        value={fieldLeft}
-                        onChange={(e) => setfieldLeft(e.target.value)}
-                        aria-label="Primary email"
+                        type="text"
+                        placeholder="First Name"
+                        value={firstName}
+                        onChange={(e) => setfirstName(e.target.value)}
+                        aria-label="First Name"
                         style={{
-                            width: formMode ? "50%" : "100%",
-                            transition: "width 380ms cubic-bezier(.2,.8,.2,1)",
+                            opacity: formMode ? "1" : "0",
+                            transition: "opacity 760ms",
                         }}
-                        className="p-2 rounded-lg bg-white focus:outline-none shadow-lg border border-gray-200 dark:border-gray-600"
+                        className="p-2 w-[50%] rounded-lg bg-white focus:outline-none shadow-lg border border-gray-200 dark:border-gray-600"
                         />
 
-                        {/* Right */}
+                        {/* Last Name */}
                         <input
-                        ref={fieldRightRef}
+                        ref={lastNameRef}
                         type="text"
                         placeholder="Last Name"
-                        value={fieldRight}
-                        onChange={(e) => setfieldRight(e.target.value)}
+                        value={lastName}
+                        onChange={(e) => setlastName(e.target.value)}
                         aria-label="Last Name"
                         style={{
-                            transition: "width 380ms cubic-bezier(.2,.8,.2,1), opacity 200ms ease",
+                            opacity: formMode ? "1" : "0",
+                            transition: "opacity 760ms",
                         }}
-                        className={`p-2 rounded-lg bg-white focus:outline-none shadow-lg border border-gray-200 dark:border-gray-600
-                            ${formMode ? "block w-1/2 opacity-100" : "hidden opacity-0"}`}
+                        className={`p-2 w-[50%] rounded-lg bg-white focus:outline-none shadow-lg border border-gray-200 dark:border-gray-600`}
                         />
                     </div>
 
-                    <div
-                    className={`relative w-full shadow-lg rounded-lg overflow-hidden transition-all duration-500
-                        ${formMode ? "max-h-40 mb-4 opacity-100 delay-300" : "max-h-0 opacity-0"}`}
-                    >
+                    <div className="relative w-full shadow-lg rounded-lg overflow-hidden mb-4">
                         <input
                             type="email"
                             placeholder="Email"
-                            className={`translate-y-0 delay-300 w-full p-2 pr-10 rounded-lg bg-white focus:outline-none border border-gray-200 transform transition-all duration-500
-                            `}
+                            className="w-full p-2 pr-10 rounded-lg bg-white focus:outline-none border border-gray-200 shadow-lg transform transition-all duration-500"
                         />
                     </div>
 
 
 
-                    <div className="relative w-full mb-6">
+                    <div className="relative rounded-lg w-full mb-6">
                         <input
                             type={showPassword ? "text" : "password"}
                             placeholder="Password"
@@ -147,7 +156,7 @@ export default function Form({ onClose }: FormProps) {
                             className="text-gray-600 dark:text-gray-200 text-xs hover:underline font-semibold cursor-pointer"
                             onClick={() => setformMode((s) => !s)}
                             aria-pressed={formMode}
-                            aria-label={formMode ? "Collapse email fields" : "Split email into two fields"}
+                            aria-label={formMode ? "Sign in" : "Sign up"}
                         >
                             {formMode ? "Sign in" : "Sign Up"}
                         </button>
