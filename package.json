@@ -3,7 +3,7 @@
     "concurrently": "^9.2.0"
   },
   "scripts": {
-    "dev": "concurrently \"go run backend/services/cmd/main.go\" \"npm run dev --prefix frontend\""
+    "dev": "concurrently \"docker compose -f backend/infra/docker-compose.yml --env-file backend/.env up -d\" \"go run backend/services/cmd/main.go\" \"npm run dev --prefix frontend\""
   },
   "dependencies": {
     "react-icons": "^5.5.0"
