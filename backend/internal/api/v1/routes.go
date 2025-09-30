@@ -4,7 +4,7 @@ package v1
 import (
 	"net/http"
 
-	"myapp/internal/service"
+	"github.com/CurlCreep/echo-music-fullstack/backend/internal/service"
 
 	"github.com/gorilla/mux" // router, you could also use chi or gin
 )
