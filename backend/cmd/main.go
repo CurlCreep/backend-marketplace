@@ -1,17 +1,20 @@
 package main
 
 import (
-    "fmt"
-    "net/http"
+	"log"
+
+	v1 "github.com/CurlCreep/echo-music-fullstack/backend/internal/api/v1"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-    fmt.Println("Product Service starting...")
+	router := gin.Default()
 
-    http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-        w.Write([]byte("OK"))
-    })
+	v1.RegisterRoutes(router)
 
-    fmt.Println("Listening on :8080")
-    http.ListenAndServe(":8080", nil)
+	log.Println("Server running on http://localhost:8080")
+	log.Println(router.Routes())
+	if err := router.Run(":8080"); err != nil {
+		log.Fatalf("could not start server: %v", err)
+	}
 }

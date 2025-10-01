@@ -1,39 +1,50 @@
 package service
 
-// User is a domain model
+import (
+	"crypto/rand"
+	"encoding/hex"
+	"errors"
+
+	"golang.org/x/crypto/bcrypt"
+)
+
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	Email    string
+	Password string
+	APIKey   string
 }
 
-// UserService is where we put user-related logic
-type UserService struct {
-	// In a real app, you'd inject a repository here (DB, cache, etc.)
-	// repo *repository.UserRepo
+var users = map[string]User{}
+
+func generateAPIKey() (string, error) {
+	bytes := make([]byte, 32)
+	if _, err := rand.Read(bytes); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(bytes), nil
 }
 
-// NewUserService creates a new instance
-func NewUserService() *UserService {
-	return &UserService{}
-}
+func CreateUser(email, password string) (User, error) {
+	if _, exists := users[email]; exists {
+		return User{}, errors.New("user already exists")
+	}
 
-// GetUserByID fetches a user (stubbed for now)
-func (s *UserService) GetUserByID(id string) (*User, error) {
-	// Hard-coded for now
-	return &User{ID: id, Name: "John Doe"}, nil
-}
+	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return User{}, err
+	}
 
-// GetAllUsers returns all users (stubbed for now)
-func (s *UserService) GetAllUsers() ([]User, error) {
-	return []User{
-		{ID: "1", Name: "Alice"},
-		{ID: "2", Name: "Bob"},
-	}, nil
-}
+	apiKey, err := generateAPIKey()
+	if err != nil {
+		return User{}, err
+	}
 
-// CreateUser simulates adding a new user
-func (s *UserService) CreateUser(name string) (*User, error) {
-	newUser := &User{ID: "3", Name: name}
-	// In real code, you'd save it in DB
-	return newUser, nil
+	user := User{
+		Email:    email,
+		Password: string(hashed),
+		APIKey:   apiKey,
+	}
+	users[email] = user
+
+	return user, nil
 }

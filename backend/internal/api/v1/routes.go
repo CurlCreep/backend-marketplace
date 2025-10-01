@@ -1,21 +1,10 @@
-// internal/api/v1/routes.go
 package v1
 
-import (
-	"net/http"
+import "github.com/gin-gonic/gin"
 
-	"github.com/CurlCreep/echo-music-fullstack/backend/internal/service"
-
-	"github.com/gorilla/mux" // router, you could also use chi or gin
-)
-
-func RegisterRoutes(r *mux.Router, userService *service.UserService) {
-	userHandler := NewUserHandler(userService)
-
-	// User routes
-	r.HandleFunc("/api/v1/users", userHandler.GetAllUsers).Methods(http.MethodGet)
-	r.HandleFunc("/api/v1/users/{id}", userHandler.GetUser).Methods(http.MethodGet)
-	r.HandleFunc("/api/v1/users", userHandler.CreateUser).Methods(http.MethodPost)
-	r.HandleFunc("/api/v1/users/{id}", userHandler.UpdateUser).Methods(http.MethodPut)
-	r.HandleFunc("/api/v1/users/{id}", userHandler.DeleteUser).Methods(http.MethodDelete)
+func RegisterRoutes(r *gin.Engine) {
+	v1 := r.Group("/api/v1")
+	{
+		v1.POST("/signup", SignupHandler)
+	}
 }

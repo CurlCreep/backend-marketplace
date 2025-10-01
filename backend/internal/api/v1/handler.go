@@ -1,27 +1,32 @@
-// internal/api/v1/handler.go
 package v1
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/CurlCreep/echo-music-fullstack/backend/internal/service"
+	"github.com/gin-gonic/gin"
 )
 
-type UserHandler struct {
-	userService *service.UserService
+type SignupRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=6"`
 }
 
-func NewUserHandler(us *service.UserService) *UserHandler {
-	return &UserHandler{userService: us}
-}
-
-func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
-	id := r.URL.Query().Get("id")
-	user, err := h.userService.GetUserByID(id)
-	if err != nil {
-		http.Error(w, "User not found", http.StatusNotFound)
+func SignupHandler(c *gin.Context) {
+	var req SignupRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	json.NewEncoder(w).Encode(user)
+
+	user, err := service.CreateUser(req.Email, req.Password)
+	if err != nil {
+		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "user created",
+		"api_key": user.APIKey,
+	})
 }
